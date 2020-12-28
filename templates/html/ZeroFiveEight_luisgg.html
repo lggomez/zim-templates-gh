@@ -11,10 +11,20 @@
 	<![if !IE]>
 	<!-- comment out for IE since it spams the user with warnings -->
 	<script type='text/javascript' src='http://code.jquery.com/jquery-3.5.1.js'></script>
+	
 	<script type='text/javascript'>
-		$(window).on('load', function(){$("#navigation").height( $("#content").height()+65 );});
+		$(window).on('load', function(){
+			$('pre code').each(function(i) {
+				hljs.highlightBlock(this);
+			});
+			$("#navigation").height( $("#content").height()+65 );});
 	</script>
+	<link rel="stylesheet"
+		href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+	<!-- <script>hljs.initHighlightingOnLoad();</script> -->
 	<![endif]>
+
 	<style>
 		body, html {
 			height:100%;
