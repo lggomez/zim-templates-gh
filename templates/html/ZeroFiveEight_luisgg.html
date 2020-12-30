@@ -11,20 +11,18 @@
 	<![if !IE]>
 	<!-- comment out for IE since it spams the user with warnings -->
 	<script type='text/javascript' src='https://code.jquery.com/jquery-3.5.1.js'></script>
-	
 	<script type='text/javascript'>
-		$(window).on('load', function(){
-			$('pre code').each(function(i) {
+		$(window).on('load', function () {
+			$('pre code').each(function (i) {
 				hljs.highlightBlock(this);
 			});
-			$("#navigation").height( $("#content").height()+65 );});
+			$("#navigation").height($("#content").height() + 65);
+			$("img").wrap( "<div class='imgcenter'></div>" );
+		});
 	</script>
-	<link rel="stylesheet"
-		href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-	<!-- <script>hljs.initHighlightingOnLoad();</script> -->
 	<![endif]>
-
 	<style>
 		body, html {
 			height:100%;
@@ -59,12 +57,12 @@
 			padding:65px;
 		}
 		h1.header {
-			color:#4100b9ce;
-			display:inline-block;
-			padding-right:65px;
-			padding-top:65px;
-			padding-left:25px;
-			position:relative;
+			color: #4100b9ce;
+			display: inline-block;
+			padding-right: 65px;
+			padding-top: 65px;
+			padding-left: 25px;
+			position: relative;
 			font-weight: bold;
 		}
 		#navigation ul {
@@ -93,6 +91,10 @@
 			color:#4E9A06;
 			font-weight:300;
 			margin-bottom: 0;
+		}
+		h1 a {
+			text-decoration: none;
+			/* no underline */
 		}
 		p {
 			margin-top: 0;
@@ -150,7 +152,16 @@
 		.migrated-box {list-style-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAANOgAADMQBiN+4gQAAAAd0SU1FB+AKHREFA8vJSnkAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAC1klEQVRIx+2VT0hUURTGf/e958w4Tc3TYowMw1GyEgwr1MqsFmbZIrIWQZsWJUjbdoHQpl3Qps0swnCRECQFYkR/TC1iKkqmfzAKTo2Vf8hoRsfR995tkRMT87RRWkUHHhy495zvnvvu933wP/75EKkkEAjIYDCIaZpIKRFCZN0kfX9xcTGtra2/irVUEolECIfDlJeXo+s6hmFkDaCqKoZhEAqFSCaTv60pqcSyLAoLC/F4PEtqDmCaJkIIKisrMybX0sdUVRWA5ubmPzdNjjI1cpXkZC/O1fV03PXgdDqRUtpPIITAsqxsDz0Z/3CZQv8uqo4N4C8/Tp2/DdM0MiZQlvk41OTkI/LW1SGtCVb5drD3eCc71wcA+VcAHA5vDd8+3UGakxiJV7i9pdQevU5T1R35pJ3MV5QW1pf+0kWBheJ2SWua8EQXZXsu4fVVYEz1sEKvof5EuxjoPvzpcRvrdp9C2gGMx6cpOHBmbImMesds7BZubwMVDTfXDnQ3vQfK7AC8wLfExMX5whyQc3q2OEnjGm5vE76SQxsfBLr77a7CNf+n0r/l6sSMtsBSnurckiIILCobAtVZhpF4gZF4jubaymj4Ch/fd380LE7bAnjc0NPxk2yqpmEuwGxF0ag+0k5uTpzZeBeaazvj0We8fXojainsb2xh2BZgbe0gSIllzSIUh63wfQ6dZ/O2fbjcKlOj58jJ3cVENESw5yErc9nf2MLQ4jwQAkV1Lqiq37/cZ9WaahJjF9AcmxiPDhLs7ePe23oOnmUwg2hSShQle96tKDjA2HAniusgo9FxnvY9Jxw7RWzGYy92QghM00x5g53qp9sHmtB58/o2umOI2NwGolMnMYUHIb7aAyiKwsjICLqu2/qBEIKUUAohMaSHSLyBSMoPTINQ6CX5+fn2AEVFRZSUlBCPx4nFYhl3L4RESjF/GEgX3pSj+Xw+/H7/b3U/AEOZFnp7O5+5AAAAAElFTkSuQmCC)}
 		ul {list-style-image: none}
 		/* ul rule needed to reset style for sub-bullets */
-
+		
+		#footer {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 2.5rem;
+		}
+		.imgcenter {
+			text-align: center;
+		}
 	</style>
 </head>
 
@@ -160,15 +171,9 @@
 	<div class="wrapper">
 		<div id="navigation"> [% index() %] </div>
 
-		            
 		<!-- Header / title -->
 		<div data-role="header" data-position="fixed">
-			<!-- !! Fill in the website title, by default: Notebook -->
-			<!-- <h1>Luis GG - [% title %]</h1>  -->
-			<h1 class="header">Luis GG - Tales and notes</h1> 
-
-			<!-- !! Optionally, create button with custom link. To apply uncomment the next line and fill in the link (and optionally change the button and text)) -->
-			<!-- <a href="http://my.website.org" data-icon="home">Main website</a> -->
+			<h1 class="header"><a href="/">Luis GG - Tales and notes</a></h1>
 		</div>
 
 		<!-- Warning message if java script is disabled -->
@@ -195,10 +200,6 @@
 				[% IF loop.last %]<br /><br />[% END %]
 			<!--[% END %]-->
 			</span>
- 
-			<script>
-				$( "img" ).wrap( "<div class='imgcenter'></div>" );
-			</script>
 
 			[% IF not loop.last %]<hr class='pageseparator'/>[% END %]
 		<!--[% END %]-->
