@@ -11,17 +11,72 @@
 	<![if !IE]>
 	<!-- comment out for IE since it spams the user with warnings -->
 	<script type='text/javascript' src='https://code.jquery.com/jquery-3.5.1.js'></script>
-	<script type='text/javascript'>
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.11.1/tocbot.css">
+
+	<script type="text/javascript">
+		var headingMap = {};
+
+		function jumpToAnchor(anchorId) {
+			// jump to an anchor
+			// from: https://stackoverflow.com/a/52138511/1121352
+			$(document).ready(function() {
+				// JQuery solution
+				$('html, body').animate({
+					'scrollTop':   $('#'+anchorId).offset().top
+				}, 500);
+				// Ensure the anchor is added in the URL so the user can more easily copy the link and share from the browser's address bar directly
+				location.hash = "#" + anchorId;
+			});
+		};
+
 		$(window).on('load', function () {
+			// Initialize highlight.js formatter
 			$('pre code').each(function (i) {
 				hljs.highlightBlock(this);
 			});
-			$("#navigation").height($("#content").height() + 65);
-			$("img").wrap( "<div class='imgcenter'></div>" );
+
+			// Prepare h# elements for tocbot
+			$('h1, h2, h3, h4, h5, h6, h7').each(function(i) {
+				heading = this
+				var id = heading.id ? heading.id : heading.textContent.trim()
+				.toLowerCase().split(' ').join('-').replace(/[!@#$%^&*():]/ig, '').replace(/\//ig, '-');
+				headingMap[id] = !isNaN(headingMap[id]) ? ++headingMap[id] : 0
+				if (headingMap[id]) {
+					heading.id = id + '-' + headingMap[id];
+				} else {
+					heading.id = id;
+				}
+				// Add a self-referential link on the header's anchor, easier to share + jump to this anchor if clicked
+				heading.innerHTML = "<a href=\"#"+id+"\" onclick=\"jumpToAnchor('"+id+"');\";>"+heading.innerHTML+"</a>";
+			});
+			
+			tocbot.init({
+				// Where to render the table of contents.
+				tocSelector: '.js-toc',
+				// Where to grab the headings to build the table of contents.
+				contentSelector: '.content',
+				// Which headings to grab inside of the contentSelector element.
+				headingSelector: 'h1, h2, h3, h4, h5, h6',
+				// For headings inside relative or absolute positioned containers within content.
+				hasInnerContainers: true,
+				// Header levels collapsing by default
+				collapseDepth: 2,
+			});
+			anchor = window.top.location.hash;
+			anchor = anchor.split("#").pop();
+
+			// Autoformat image and navigation height
+			var headerPadding = parseInt($("div .header").css('padding-top').replace('px', '')) + parseInt($("div .header").css('padding-bottom').replace('px', ''));
+			var contentHeight = $("#content").outerHeight();
+			$("#navigation").height(contentHeight + headerPadding);
+			$("img").wrap("<div class='imgcenter'></div>");
 		});
 	</script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/default.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
 	<![endif]>
 	<style>
 		body, html {
@@ -42,12 +97,15 @@
 			background-color:#F3F3F3;
 			display:inline-block;
 			border-right:1px solid #EAEAEA;
-			padding-right:65px;
-			padding-top:65px;
+			padding-right:30px;
+			padding-top:25px;
 			padding-left:25px;
 			position:relative;
 			float:left;
 			min-height:100%;
+			height: 100%;
+			width: 350px;
+			max-width: 350px;
 		}
 		#content {
 			float:left;
@@ -84,6 +142,13 @@
 		#navigation a:hover {
 			text-decoration:underline;
 		}
+		.navbar-title {
+			font-weight: bold;
+			margin-top: 25px;
+			background-color: ivory;
+			border-radius: 20px;
+			padding-left: 10px;
+		}
 		#content h1:nth-child(1) {
 			margin-top:0;
 		}
@@ -91,6 +156,10 @@
 			color:#4E9A06;
 			font-weight:300;
 			margin-bottom: 0;
+		}
+		#content h1 a {
+			padding-bottom: 50px;
+   			display: inline-block;
 		}
 		h1 a {
 			text-decoration: none;
@@ -154,22 +223,38 @@
 		/* ul rule needed to reset style for sub-bullets */
 		
 		#footer {
-			position: absolute;
 			bottom: 0;
-			width: 100%;
-			height: 2.5rem;
+			padding-top: 25px;
 		}
 		.imgcenter {
 			text-align: center;
 		}
-	</style>
+
+		.toc-link, .toc-list-item, .toc-list-item a {
+			/* Remove underlining for all toc entries */
+			text-decoration: none;
+		}
+		.toc-link:not(.is-active-link) {
+			/* Only leave the active toc entry (currently watched) as bold, else put text in normal weight */
+			font-weight: normal !important;
+		}
+</style>
 </head>
 
 [% options.empty_lines = "default" %]
 
 <body>
 	<div class="wrapper">
-		<div id="navigation"> [% index() %] </div>
+		<div id="navigation"> 
+			<!-- Wiki/Site index -->
+			<p class="navbar-title">Site navigation index</p>
+			[% index() %]
+
+			<!-- Current document's Table Of Contents placeholder and style, this table of content will be generated from headers in the document -->
+			<p class="navbar-title">Article table of contents</p>
+			<nav class="toc js-toc relative z-1 transition--300 pa4" style="position: relative; max-width:inherit;">
+			</nav>
+		</div>
 
 		<!-- Header / title -->
 		<div data-role="header" data-position="fixed">
@@ -183,11 +268,16 @@
 			</div>
 		</noscript>
 
-		<div id="content">
+		<div id="content" class="content">
 		<!--[% FOR page IN pages %]-->
 			<h1>[% page.title %] <a name='[% anchor(page) %]'></a></h1>
 
 			[% page.body %]
+
+			<footer id="footer">
+				<p><i>Author: Luis Gabriel Gomez</i></p>
+				<p><i>This site was generated using <a href='https://zim-wiki.org'>[% generator.name %]</a> and an author-made <a href='https://github.com/lggomez/zim-templates-gh'>fork of ZeroFiveEight</a></i></p>
+			</footer>
 
 			<br>
 			<span class="backlinks">
