@@ -1,3 +1,9 @@
+[% SET indexTitle = title %]
+[% SET indexMessage = "" %]
+
+[% options.empty_lines = "remove" %]
+[% options.line_breaks = "default" %]
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -114,6 +120,9 @@
 			max-width:960px;
 			padding:65px;
 		}
+		#content h1:nth-child(1) {
+			margin-top:0;
+		}
 		h1.header {
 			color: #4100b9ce;
 			display: inline-block;
@@ -223,8 +232,15 @@
 		/* ul rule needed to reset style for sub-bullets */
 		
 		#footer {
-			bottom: 0;
-			padding-top: 25px;
+			grid-column: span 2;
+			grid-row: row;
+			background-color: #DEE3E9;
+			border-top: 1px solid #B9C3CF;
+			border-bottom: 1px solid #B9C3CF;
+			font-size: 0.7em;
+			text-align: center;
+			padding: 10px;
+			color: #111;
 		}
 		.imgcenter {
 			text-align: center;
@@ -269,30 +285,30 @@
 		</noscript>
 
 		<div id="content" class="content">
-		<!--[% FOR page IN pages %]-->
-			<h1>[% page.title %] <a name='[% anchor(page) %]'></a></h1>
+			[% FOR page IN pages %]
+				<h1>[% page.title %] <a name='[% anchor(page) %]'></a></h1>
 
-			[% page.body %]
+				[% page.body %]
 
-			<footer id="footer">
-				<p><i>Author: Luis Gabriel Gomez</i></p>
-				<p><i>This site was generated using <a href='https://zim-wiki.org'>[% generator.name %]</a> and an author-made <a href='https://github.com/lggomez/zim-templates-gh'>fork of ZeroFiveEight</a></i></p>
-			</footer>
-
-			<br>
-			<span class="backlinks">
-			<!--[% FOR link IN page.backlinks %]-->
-				[% IF loop.first %]
-				<hr class='footnotes'>
-				<b>Backlinks:</b>
+				<br>
+				<span class="backlinks">
+				[% FOR link IN page.backlinks %]
+					[% IF loop.first %]
+					<hr class='footnotes'>
+					<b>Backlinks:</b>
+					[% END %]
+					<a href='[% uri(link) %]'>[% link.name %]</a>
+					[% IF loop.last %]<br /><br />[% END %]
 				[% END %]
-				<a href='[% uri(link) %]'>[% link.name %]</a>
-				[% IF loop.last %]<br /><br />[% END %]
-			<!--[% END %]-->
-			</span>
+				</span>
 
-			[% IF not loop.last %]<hr class='pageseparator'/>[% END %]
-		<!--[% END %]-->
+				[% IF not loop.last %]<hr class='pageseparator'/>[% END %]
+			[% END %]
+		</div>
+
+		<div id="footer">
+			<p><i>Author: Luis Gabriel Gomez</i></p>
+			<p><i>This site was generated using <a href='https://zim-wiki.org'>[% generator.name %]</a> and an author-made <a href='https://github.com/lggomez/zim-templates-gh'>fork of ZeroFiveEight</a></i></p>
 		</div>
 	</div>
 
