@@ -1,0 +1,1 @@
+Copy-Item ".\templates\html" -Destination "..\zim-desktop-wiki\data\templates" -Recurse -Force
