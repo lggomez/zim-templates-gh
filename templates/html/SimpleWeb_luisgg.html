@@ -49,8 +49,22 @@
             [% IF links.get("index") %]
             $("#navigation").children("ul").prepend("<li class='index-item'><a href='[% uri(links.get("index")) %]'>[% gettext("Index") %]</a></li>");
             [% END %]
+
+            $(".toggle").addClass('toggle-off');
             $(".toggle").click(function(){
                 $("#navigation").children("ul").toggle();
+                var vwWidth = $(window).width();
+                if ($(".toggle").hasClass('toggle-on')) {
+                    $(".toggle").removeClass('toggle-on');
+                    $(".toggle").addClass('toggle-off');
+                    $(".wrapper").css('max-width', vwWidth + '%');
+                    $(".wrapper").css('width', vwWidth + 'vw');
+                } else if ($(".toggle").hasClass('toggle-off')) {
+                    $(".toggle").removeClass('toggle-off');
+                    $(".toggle").addClass('toggle-on');
+                    $(".wrapper").css('max-width', vwWidth + '%');
+                    $(".wrapper").css('width', vwWidth + 'vw');
+                }
             });
             $("img").wrap("<div class='imgcenter'></div>");
         });
